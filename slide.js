@@ -67,12 +67,7 @@ export default class Slide {
     this.wrapper.addEventListener('mouseup', this.onEnd)
     this.wrapper.addEventListener('touchend', this.onEnd)
   }
-  bindEvents() {
-    this.onStart = this.onStart.bind(this)
-    this.onMove = this.onMove.bind(this)
-    this.onEnd = this.onEnd.bind(this)
-    this.onResize = debounce(this.onResize.bind(this), 200)
-  }
+
   //slide config
   slidePosition(slide) {
     const margin = (this.wrapper.offsetWidth - slide.offsetWidth) / 2
@@ -130,6 +125,14 @@ export default class Slide {
   addResizeEvent() {
     window.addEventListener('resize', this.onResize)
   }
+  bindEvents() {
+    this.onStart = this.onStart.bind(this)
+    this.onMove = this.onMove.bind(this)
+    this.onEnd = this.onEnd.bind(this)
+    this.activeNextSlide = this.activeNextSlide.bind(this)
+    this.activePrevSlide = this.activePrevSlide.bind(this)
+    this.onResize = debounce(this.onResize.bind(this), 200)
+  }
 
   init() {
     this.bindEvents()
@@ -137,6 +140,18 @@ export default class Slide {
     this.addSlideEvents()
     this.slideConfig()
     this.addResizeEvent()
+    this.changeSlide(0)
     return this
+  }
+}
+export class SlideNav extends Slide {
+  addArrow(prev, next) {
+    this.prevElement = document.querySelector(prev)
+    this.nextElement = document.querySelector(next)
+    this.addArrowEvent()
+  }
+  addArrowEvent() {
+    this.prevElement.addEventListener('click', this.activePrevSlide)
+    this.nextElement.addEventListener('click', this.activeNextSlide)
   }
 }
